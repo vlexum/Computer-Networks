@@ -45,8 +45,8 @@ int main() {
         // check the chars
         printf("%c", c);
     }
-    
-    printf("/n");
+
+    printf("\n");
     return EXIT_SUCCESS;
 }
 
