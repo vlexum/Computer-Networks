@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <syslog.h>
+#include <netdb.h>
 
 /* Function prototypes */
 void* handle_client(void* arg);
