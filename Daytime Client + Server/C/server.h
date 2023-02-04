@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <syslog.h>
 #include <netdb.h>
+#include <string.h>
 
 /* Function prototypes */
 void* handle_client(void* arg);
