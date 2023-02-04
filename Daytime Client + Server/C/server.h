@@ -14,8 +14,12 @@
 void* handle_client(void* arg);
 
 /* Preprocessor directives */
-#define SERVER_ADDR "127.0.0.1" // loopback ip address
+#define SERVER_ADDR "142.11.217.88" // loopback ip address
 #define PORT 23657              // port the server will listen on
+
+// Constants for DAYTIME CLIENT connecting to time.nist.gov:13
+#define DAYTIME_ADDR "time.nist.gov"
+#define DAYTIME_PORT 13
 
 #define FALSE 0
 #define TRUE !FALSE
