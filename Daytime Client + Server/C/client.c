@@ -15,7 +15,7 @@ int main() {
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
     // create addr struct
     client_address.sin_family = AF_INET;
-    client_address.sin_addr.s_addr = inet_addr(DAYTIME_ADDR);
+    client_address.sin_addr.s_addr = inet_addr(gethostbyname(DAYTIME_ADDR));
     client_address.sin_port = htons(DAYTIME_PORT);
     
     // connect to server socket
