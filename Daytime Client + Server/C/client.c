@@ -4,7 +4,6 @@
  * MAIN
  ************************************************************************/
 int main() {
-    char input[100];                    // buffer for user input
     int client_socket;                  // client side socket
     struct sockaddr_in client_address;  // client socket naming struct
     char c;
