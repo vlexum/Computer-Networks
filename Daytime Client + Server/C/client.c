@@ -46,6 +46,7 @@ int main() {
         printf("%c", c);
     }
     
+    printf("/n");
     return EXIT_SUCCESS;
 }
 
