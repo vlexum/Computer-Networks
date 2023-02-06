@@ -67,31 +67,23 @@ int main(int argc, char** argv) {
 
 void* handle_client(void* arg) { // xxxxx
     int client_socket = *((int*)arg);   // the socket connected to the client
-    char input;
     int keep_going = TRUE;
+    char timeStr[80];
+    char endChar = '*';
     
-    while (keep_going) {
-        // read char from client
-        switch (read(client_socket, &input, sizeof(char))) {
-            case 0:
-                keep_going = FALSE;
-                perror("End of stream, returning ...\n");
-                break;
-            case -1:
-                perror("Error reading from network!\n");
-                keep_going = FALSE;
-                break;
-        }
-        printf("%c", input);
-        
-        // check if we terminate
-        if (input == 'q') {
-            keep_going = FALSE;
-        }
-        
-        // send result back to client
-        write(client_socket, &input, sizeof(char));
-    }
+    // grab local time
+    time_t currTime;
+    time(&currTime);
+
+    // convert to string and store
+    ctime_r(&currTime, timeStr);
+
+    // send the time back
+    write(client_socket, timeStr, strlen(timeStr));
+
+    // now send back char to mark the end
+    write(client_socket, &endChar, sizeof(char));
+
     
     // cleanup
     if (close(client_socket) == -1) {
