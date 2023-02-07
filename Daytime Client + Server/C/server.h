@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <syslog.h>
 #include <netdb.h>
+#include <signal.h>
 #include <string.h>
 #include <time.h>
 
