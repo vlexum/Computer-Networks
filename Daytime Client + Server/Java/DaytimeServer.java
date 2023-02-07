@@ -8,6 +8,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import java.util.Date;
+
 public class DaytimeServer {
 
     private static ServerSocket serverSocket;
