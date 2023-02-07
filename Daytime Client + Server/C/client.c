@@ -32,6 +32,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
     
+    // loop always
     while (TRUE) {
         // Read a char from server
         read(client_socket, &c, sizeof(char));
@@ -41,7 +42,7 @@ int main() {
             break;
         }
 
-        // check the chars
+        // display the chars
         printf("%c", c);
     }
 
