@@ -69,7 +69,7 @@ void* handle_client(void* arg) { // xxxxx
     int client_socket = *((int*)arg);   // the socket connected to the client
     int keep_going = TRUE;
     char timeStr[80];
-    char endChar = '*';
+    char onTimeMarker = '*';
     
     // grab local time
     time_t currTime;
@@ -82,7 +82,7 @@ void* handle_client(void* arg) { // xxxxx
     write(client_socket, timeStr, strlen(timeStr));
 
     // now send back char to mark the end
-    write(client_socket, &endChar, sizeof(char));
+    write(client_socket, &onTimeMarker, sizeof(char));
 
     
     // cleanup
