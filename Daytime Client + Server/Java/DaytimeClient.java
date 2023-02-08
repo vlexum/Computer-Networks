@@ -5,17 +5,18 @@ import java.io.InputStreamReader;
 
 public class DaytimeClient {
     public static void main(String[] args) {
-        String hostname = "time.nist.gov";
+        String ipAddress = "142.11.217.88";
         int port = 13;
 
         // connect to host
-        handleServer(hostname, port);
+        handleServer(ipAddress, port);
     }
 
     // Connects to specified host and port and recieves input from Daytime Server
-    public static void handleServer (String host, int port) {
+    public static void handleServer (String ipAddress, int port) {
         // try to create socket to host, if accepted read input for time
-        try (Socket socket = new Socket(host, port)) {
+        try (Socket socket = new Socket(ipAddress, port)) {
+            
             InputStream input = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(input);
             char letter;
