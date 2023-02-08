@@ -14,7 +14,6 @@ public class DaytimeServer {
 
     private static ServerSocket serverSocket;
     private static int port;
-    Socket clientSocket = null;
 
     public DaytimeServer(int port) {
         try {
@@ -31,72 +30,75 @@ public class DaytimeServer {
 
     public void runServerLoop() throws IOException {
 
-        System.out.println("Echo server started");
+        System.out.println("Daytime server started");
 
         while (true) {
             System.out.println("Waiting for connections on port #" + port);
 
-            handleClient(serverSocket.accept());
+            // accpet the client
+            Socket clientSocket = serverSocket.accept();
+
+            // pass client socket off to handler that makes use of threads
+            ClientHandler client = new ClientHandler(clientSocket);
+            client.start();
         }
-    }
+    } 
 
-    public void handleClient(Socket clientSocket) {
+    static class ClientHandler extends Thread {
+        private Socket clientSocket;
 
-        DataInputStream fromClient = null;
-        DataOutputStream toClient = null;
 
-        int charFromClient = 0;
-        int state = 0;
-        boolean keepGoing = true;
-
-        // show that we are connected to client
-        System.out.println("Client connected ...");
-
-        // first get the streams
-        try {
-            fromClient = new DataInputStream(clientSocket.getInputStream());
-            toClient = new DataOutputStream(clientSocket.getOutputStream());
-        } catch (IOException e) {
-            System.err.println("Error opening network streams");
-            return;
+        public ClientHandler(Socket clientSocket) {
+            this.clientSocket = clientSocket;
         }
 
-        // now talk to the client
-        while (keepGoing) {
+        @Override
+        public void run() {
+            DataOutputStream toClient = null;;
+            char onTimeMarker = '*';
+
+            // show that we are connected to client
+            System.out.println("Client connected ...");
+
+            // first get the stream
             try {
-                charFromClient = fromClient.readByte();
-                System.out.print((char)charFromClient);
+                toClient = new DataOutputStream(clientSocket.getOutputStream());
             } catch (IOException e) {
-                System.err.println("Error reading character from client");
+                System.err.println("Error opening network stream");
                 return;
             }
 
+            // Get time
+            Date currDate = new Date();
+            String dateStr = (currDate.toString()) + onTimeMarker;
+            
+            // write to the client
             try {
-                toClient.writeByte(charFromClient);
+                // send the date and time
+                toClient.writeChars(dateStr);
             } catch (IOException e) {
                 System.err.println("Error writing character to client");
-                return;            }
-
-            if (charFromClient == 'q') {
-                System.out.println("\nBailing out!");
-                keepGoing = false;
+                return;
             }
-        }
+    
 
-        try {
-            clientSocket.close();
-        } catch (IOException e) {
-            System.err.println("Error closing socket to client");
-        }
+            // close the client socket
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                System.err.println("Error closing socket to client");
+            }
 
+
+        }
     }
 
     public static void main(String args[]) throws Exception {
         // create instance of echo server
         // note that hardcoding the port is bad, here we do it just for simplicity reasons
-        DaytimeServer echoServer = new DaytimeServer(23657);
+        DaytimeServer server = new DaytimeServer(13);
 
         // fire up server loop
-        echoServer.runServerLoop();
+        server.runServerLoop();
     }
 }
