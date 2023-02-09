@@ -1,4 +1,4 @@
-import java.io.DataInputStream;
+package daytime;
 import java.io.DataOutputStream;
 
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 import java.util.Date;
 
-public class DaytimeServer {
+public class DaytimeServer implements DaytimeConstants {
 
     private static ServerSocket serverSocket;
     private static int port;
@@ -96,7 +96,7 @@ public class DaytimeServer {
     public static void main(String args[]) throws Exception {
         // create instance of echo server
         // note that hardcoding the port is bad, here we do it just for simplicity reasons
-        DaytimeServer server = new DaytimeServer(13);
+        DaytimeServer server = new DaytimeServer(PORT);
 
         // fire up server loop
         server.runServerLoop();

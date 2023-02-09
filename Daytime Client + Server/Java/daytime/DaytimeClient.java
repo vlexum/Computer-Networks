@@ -1,15 +1,13 @@
+package daytime;
 import java.io.IOException;
 import java.net.Socket;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class DaytimeClient {
+public class DaytimeClient implements DaytimeConstants {
     public static void main(String[] args) {
-        String ipAddress = "142.11.217.88";
-        int port = 13;
-
         // connect to host
-        handleServer(ipAddress, port);
+        handleServer(SERVER_ADDRESS, PORT);
     }
 
     // Connects to specified host and port and recieves input from Daytime Server
