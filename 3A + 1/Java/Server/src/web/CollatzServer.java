@@ -5,7 +5,7 @@ import java.net.*;
 import java.util.*;
 
 
-class WebServer {
+class CollatzServer {
 
     // where to print log
     static PrintStream log = null;
@@ -29,7 +29,7 @@ class WebServer {
     static int workers = 5;
 
     // default constructor
-    WebServer() {}
+    CollatzServer() {}
         
     // print to stdout
     protected static void print(String s) {
@@ -137,7 +137,7 @@ class WebServer {
         loadProps();
         printProps();
 
-        (new WebServer()).run();
+        (new CollatzServer()).run();
 
     }
 }
