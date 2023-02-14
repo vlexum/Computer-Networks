@@ -3,9 +3,6 @@
 /************************************************************************
  * MAIN
  ************************************************************************/
-/************************************************************************
- * MAIN
- ************************************************************************/
 int main() {
     int client_socket;                  // client side socket
     struct sockaddr_in client_address;  // client socket naming struct
@@ -38,8 +35,10 @@ int main() {
         perror("Error getting number!\n");
         exit(EXIT_FAILURE);
     }
+
+    // Talk to server
     
-    uint32_t endianNum = htonl((uint32_t)num);
+    int32_t endianNum = (int32_t)htonl((uint32_t)num);
     
     // send the int to the server
     write(client_socket, &endianNum, sizeof(int32_t));
