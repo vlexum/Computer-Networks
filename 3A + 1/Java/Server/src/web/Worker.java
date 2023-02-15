@@ -77,11 +77,10 @@ class Worker extends Thread implements HttpConstants {
         int cycles = collatz(number);
 
         // return cycles back to client
-        toClient.writeInt(cycles);
+        toClient.writeByte(cycles);
+	    toClient.flush();
 
-        System.out.println("Sending Back: " + cycles);
-
-        toClient.flush();
+	System.out.println("Sending Back: " + cycles);
     }
 
     public int collatz(int number) {

@@ -12,7 +12,6 @@
 #include <netdb.h>
 #include <signal.h>
 #include <string.h>
-#include <time.h>
 #include <stdint.h>
 
 /* Function prototypes */
