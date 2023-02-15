@@ -59,3 +59,4 @@ int main() {
     printf("Number of Cycles: %lu\n", (unsigned long)serverResult);
     
     return EXIT_SUCCESS;
+}
