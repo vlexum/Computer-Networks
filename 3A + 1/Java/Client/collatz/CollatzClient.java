@@ -9,7 +9,7 @@ public class CollatzClient implements CollatzConstants {
         handleServer(SERVER_ADDRESS, PORT);
     }
 
-    // Connects to specified host and port and recieves input from Daytime Server
+    // Connects to specified host and port and recieves input from 3A + 1 Server
     public static void handleServer (String ipAddress, int port) {
         // try to create socket to host, if accepted read input for time
         try (Socket socket = new Socket(ipAddress, port)) {
@@ -33,7 +33,7 @@ public class CollatzClient implements CollatzConstants {
 
             toServer.writeInt(numIn);
 
-            int cycles = fromServer.readInt();
+            int cycles = fromServer.readByte();
 
             System.out.println("Number of cycles: " + cycles);
 
