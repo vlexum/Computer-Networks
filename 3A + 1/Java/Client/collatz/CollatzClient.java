@@ -33,7 +33,7 @@ public class CollatzClient implements CollatzConstants {
 
             toServer.writeInt(numIn);
 
-            int cycles = fromServer.readByte();
+            int cycles = fromServer.readUnsignedByte();
 
             System.out.println("Number of cycles: " + cycles);
 
