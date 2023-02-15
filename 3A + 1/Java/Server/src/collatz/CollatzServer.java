@@ -1,4 +1,4 @@
-package web;
+package collatz;
 
 import java.io.*;
 import java.net.*;

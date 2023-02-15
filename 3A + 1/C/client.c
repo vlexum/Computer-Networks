@@ -53,7 +53,7 @@ int main() {
     close(client_socket);
     
     // convert recieved into to host byte order 
-    uint32_t convertedResult = ntohl((uint32_t)serverResult);
+    //uint32_t convertedResult = ntohl((uint32_t)serverResult);
 
     // return the result to user
     printf("Number of Cycles: %lu\n", (unsigned long)serverResult);

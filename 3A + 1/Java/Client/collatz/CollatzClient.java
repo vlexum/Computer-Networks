@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class CollatzClient implements CollatzConstants {
     public static void main(String[] args) {
-        // connect to host
+        // connect to server
         handleServer(SERVER_ADDRESS, PORT);
     }
 
@@ -31,13 +31,14 @@ public class CollatzClient implements CollatzConstants {
             int numIn = in.nextInt();
             in.close();
 
+            // send to server
             toServer.writeInt(numIn);
 
+            // read int back from server
             int cycles = fromServer.readUnsignedByte();
 
-            System.out.println("Number of cycles: " + cycles);
-
-            System.out.println();
+            // share result 
+            System.out.println("Number of cycles: " + cycles + "\n");
         } catch (IOException err) {
             System.err.println("Error: " + err.getMessage());
         }

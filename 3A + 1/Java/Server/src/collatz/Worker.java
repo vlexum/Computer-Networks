@@ -1,4 +1,4 @@
-package web;
+package collatz;
 
 import java.io.*;
 import java.net.*;
@@ -68,9 +68,8 @@ class Worker extends Thread implements HttpConstants {
             return;
         }
         
-        // get integer from client
+        // get integer from client - 4 bytes
         int number = fromClient.readInt();
-
         System.out.println("Received: " + number);
 
         // find the cycles
@@ -78,13 +77,20 @@ class Worker extends Thread implements HttpConstants {
 
         // return cycles back to client
         toClient.writeByte(cycles);
-	    toClient.flush();
+        System.out.println("Sending Back: " + cycles);
 
-	System.out.println("Sending Back: " + cycles);
+        // c client needs this
+	    toClient.flush();
     }
 
     public int collatz(int number) {
         int numCyles  = 0;
+
+        // check if n > 0
+        if (number <= 0) {
+            System.err.println("Error: number must be greater 0");
+            return -1;
+        }
 
         // keep going until 1
         while(number != 1) {
