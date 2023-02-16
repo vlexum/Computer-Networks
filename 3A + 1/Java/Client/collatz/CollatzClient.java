@@ -31,14 +31,23 @@ public class CollatzClient implements CollatzConstants {
             int numIn = in.nextInt();
             in.close();
 
-            // send to server
+            // check if n > 0
+            if (numIn <= 0) {
+                System.err.println("Error: number must be greater 0");
+                return;
+            }
+
+            // send to server 
             toServer.writeInt(numIn);
 
-            // read int back from server
-            int cycles = fromServer.readUnsignedByte();
-
+            // read int back from server 
+            int cycles = fromServer.readInt();
+            
             // share result 
             System.out.println("Number of cycles: " + cycles + "\n");
+
+            // close socket
+            socket.close();
         } catch (IOException err) {
             System.err.println("Error: " + err.getMessage());
         }

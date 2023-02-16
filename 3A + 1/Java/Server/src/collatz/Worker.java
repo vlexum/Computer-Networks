@@ -68,7 +68,7 @@ class Worker extends Thread implements HttpConstants {
             return;
         }
         
-        // get integer from client - 4 bytes
+        // get integer from client 
         int number = fromClient.readInt();
         System.out.println("Received: " + number);
 
@@ -76,21 +76,15 @@ class Worker extends Thread implements HttpConstants {
         int cycles = collatz(number);
 
         // return cycles back to client
-        toClient.writeByte(cycles);
+        toClient.writeInt(cycles);
         System.out.println("Sending Back: " + cycles);
 
-        // c client needs this
+        // clear the stream
 	    toClient.flush();
     }
 
     public int collatz(int number) {
         int numCyles  = 0;
-
-        // check if n > 0
-        if (number <= 0) {
-            System.err.println("Error: number must be greater 0");
-            return -1;
-        }
 
         // keep going until 1
         while(number != 1) {
