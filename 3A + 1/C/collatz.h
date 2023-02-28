@@ -1,3 +1,6 @@
+#ifndef COLLATZ_H
+#define COLLATZ_H
+
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <netinet/in.h>
@@ -16,6 +19,11 @@
 
 /* Function prototypes */
 void* handle_client(void* arg);
+uint32_t collatz(uint32_t num);
+
+// forward declaration
+void readInt32(int socket, uint32_t *result);
+void writeInt32(int socket, uint32_t num);
 
 /* Preprocessor directives */
 #define SERVER_ADDR "142.11.217.88" // loopback ip address
@@ -27,3 +35,4 @@ void* handle_client(void* arg);
 
 #define NUM_CONNECTIONS 1       // number of pending connections in the connection queue
 
+#endif
