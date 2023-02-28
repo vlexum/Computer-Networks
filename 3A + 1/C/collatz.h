@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <string.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 /* Function prototypes */
 void* handle_client(void* arg);
