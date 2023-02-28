@@ -42,7 +42,7 @@ int main() {
     writeInt32(server_socket, num);
 
     // read back result
-    readInt32(server_socket, &cycles)
+    readInt32(server_socket, &cycles);
 
     // return the result to user
     printf("Number of Cycles: %lu\n", (unsigned long)cycles);
