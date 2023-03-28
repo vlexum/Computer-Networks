@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 typedef enum {
     JOIN,
@@ -36,18 +37,14 @@ typedef struct {
 void* handle_client(void* arg);
 
 // forward declaration
-void readInt32(int socket, uint32_t *result);
-void writeInt32(int socket, uint32_t num);
-void readMessage(int socket, Message *msg);
-void sendMessage(int socket, Message msg);
+bool readInt32(int socket, uint32_t *result);
+bool writeInt32(int socket, uint32_t num);
+bool readMessage(int socket, Message *msg);
+bool sendMessage(int socket, Message msg);
 
 /* Preprocessor directives */
 #define SERVER_ADDR "142.11.217.88" // loopback ip address
 #define PORT 23657              // port the server will listen on
-
-
-#define FALSE 0
-#define TRUE !FALSE
 
 #define NUM_CONNECTIONS 20       // number of pending connections in the connection queue
 

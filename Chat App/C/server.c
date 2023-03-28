@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
      printf("\nServer Started!\n");
 
     // server loop
-    while (TRUE) {
+    while (true) {
         
         // accept connection to client
         int client_socket = accept(server_socket, NULL, NULL);
