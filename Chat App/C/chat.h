@@ -33,6 +33,12 @@ typedef struct {
     char content[80]; // message content if NOTE
 } Message;
 
+typedef struct  {
+    char ip[46];
+    int port;
+    struct ClientInfo *nextClient;
+} ClientInfo;
+
 /* Function prototypes */
 void* handle_client(void* arg);
 
