@@ -34,23 +34,37 @@ typedef struct {
 } Message;
 
 typedef struct  {
-    char ip[46];
+    char ip[16];
     int port;
     struct ClientInfo *nextClient;
 } ClientInfo;
 
 /* Function prototypes */
 void* handle_client(void* arg);
+void *handleMessage(void *arg);
+void printMessage(Message msg);
+void addUser(Message msg);
+void removeUser(Message msg);
+void getNetDetails(char *info, char *ip, int *port);
+void forwardMsg(Message msg);
+void *getMessages();
+
 
 // forward declaration
 bool readInt32(int socket, uint32_t *result);
 bool writeInt32(int socket, uint32_t num);
 bool readMessage(int socket, Message *msg);
 bool sendMessage(int socket, Message msg);
+void flush();
+Commands createMessage(char *input, Message *msg);
 
 /* Preprocessor directives */
 #define SERVER_ADDR "142.11.217.88" // loopback ip address
 #define PORT 23657              // port the server will listen on
+
+#define MY_IP "142.11.217.88"
+#define MY_PORT 23456
+#define MY_NAME "Scott"
 
 #define NUM_CONNECTIONS 20       // number of pending connections in the connection queue
 

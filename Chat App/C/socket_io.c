@@ -87,3 +87,28 @@ bool readMessage(int socket, Message *msg) {
     // successful operation
     return true;
 }
+
+void printMessage(Message msg) {
+    printf("Message Recieved:\n");
+    printf(" - Command: ");
+
+    if (msg.type == JOIN){
+        printf("JOIN\n");
+    }
+    else if (msg.type == LEAVE) {
+        printf("LEAVE\n");
+    }
+    else if (msg.type == SHUTDOWN) {
+        printf("SHUTDOWN\n");
+    }
+    else if (msg.type == SHUTDOWN_ALL) {
+        printf("SHUTDOWN ALL\n");
+    }
+    else {
+        printf("NOTE\n");
+    }
+
+    printf(" - Sender: %s\n", msg.sender);
+    
+    printf(" - Content: %s\n", msg.content);
+}
