@@ -119,7 +119,6 @@ void forwardMsg(Message msg) {
     // send message to all the clients
     ClientInfo *current = head;
 
-
     while (current != NULL) {
         // create socket
         int client_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -141,10 +140,7 @@ void forwardMsg(Message msg) {
         }
 
         // send message to client
-        if (!sendMessage(client_socket, msg)) {
-            perror("Error sending message\n");
-            exit(EXIT_FAILURE);
-        }
+        sendMessage(client_socket, msg);
 
         // close socket to client
         if (close(client_socket) == -1) {
@@ -162,7 +158,6 @@ void addUser(Message msg) {
     ClientInfo *newClient = (ClientInfo *)malloc(sizeof(ClientInfo));
     char ip[16];
     int port;
-
 
     getNetDetails(msg.content, ip, &port);
 
