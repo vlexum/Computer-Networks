@@ -159,18 +159,20 @@ void addUser(Message msg) {
     char ip[16];
     int port;
 
+    // retreive ip and port
     getNetDetails(msg.content, ip, &port);
 
     // set node values
     strcpy(newClient->ip, ip);
     newClient->port = port;
+    newClient->nextClient = NULL;
 
     // place in LL
     if (head == NULL) {
         head = newClient;
     }
     // put at the end
-    else {
+    else { 
         ClientInfo *current = head;
         while (current->nextClient != NULL) {
             current = current->nextClient;
@@ -194,7 +196,8 @@ void removeUser(Message msg) {
         if (strcmp(current->ip, ip) == 0 && current->port == port) {
             if (prev == NULL) {
                 head = current->nextClient;
-            } else {
+            } 
+            else {
                 prev->nextClient = current->nextClient;
             }
             free(current);
@@ -225,4 +228,19 @@ void getNetDetails(char *info, char *ip, int *port) {
     }
 }
 
+// Debug Functions
+void printClientList() {
+    ClientInfo *current = head;
+    int i = 1;
 
+    // print all clients
+    while (current != NULL) {
+        printf("User #%d\n", i);
+        printf(" - Ip: %s\n", current->ip);
+        printf(" - Port: %d\n", current->port);
+
+        // update current
+        current = current->nextClient;
+        i++;
+    } 
+}

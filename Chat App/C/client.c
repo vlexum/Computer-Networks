@@ -41,7 +41,8 @@ int main() {
         
         // get user input
         fgets(message, 64, stdin);
-        //flush();
+        printf("\x1b[1F"); // Move to beginning of previous line
+        printf("\x1b[2K"); // Clear entire line
 
         // parse input
         Commands cmd = createMessage(message, &newMsg);
@@ -154,7 +155,7 @@ void *getMessages() {
 
         readMessage(socket, &inMsg);
 
-        printMessage(inMsg);
+        messageToChat(inMsg);
     }
 }
 
@@ -169,59 +170,68 @@ Commands createMessage(char *input, Message *msg) {
     // set name - same regardles of msg type
     strcpy(msg->sender, MY_NAME);
 
+    // if not note send net details
+    // put client ip and port into string
+    char address[30];
+    sprintf(address, "%s:%d", MY_IP, MY_PORT);
+
+    // address info as content
+    strcpy(msg->content, address);
+
+    // get ip from user
+    if (sscanf(input + totalLen, "%s", serverAddress) != 1) {
+        // no IP address provided
+        strcpy(serverAddress, SERVER_ADDR);  // set serverAddress to config ip
+    }
+
     // check for JOIN command
     if (strncmp(command, "JOIN", 4) == 0) {
         // set type 
         msg->type = JOIN;
-
-        // put client ip and port into string
-        char address[30];
-        sprintf(address, "%s:%d", MY_IP, MY_PORT);
-
-        // address info as content
-        strcpy(msg->content, address);
-
-        // get ip from user
-        if (sscanf(input + totalLen, "%s", serverAddress) != 1) {
-            // no IP address provided
-            strcpy(serverAddress, SERVER_ADDR);  // set serverAddress to config ip
-        }
     }
-    // check for LEAVE command
     else if (strncmp(command, "LEAVE", 5) == 0) {
         // set type 
         msg->type = LEAVE;
-
-        // no content for LEAVE message
-        msg->content[0] = '\0';
     }
-    // check for SHUTDOWN command
     else if (strncmp(command, "SHUTDOWN", 8) == 0) {
         // set type 
         msg->type = SHUTDOWN;
-
-        // no content for SHUTDOWN message
-        msg->content[0] = '\0';
     }
-    // check for SHUTDOWN ALL command
     else if (strncmp(command, "SHUTDOWN ALL", 12) == 0) {
         // set type 
         msg->type = SHUTDOWN_ALL;
-
-        // no content for SHUTDOWN ALL message
-        msg->content[0] = '\0';
     }
     // no command -> note
     else {
         // set type 
         msg->type = NOTE;
 
+        // replace ip with note content 
         strcpy(msg->content, input);
     }
 
     // return the msg type
     return msg->type;
 }
+
+void messageToChat(Message msg) {
+    switch (msg.type){
+        case JOIN:
+            printf("%s has joined!\n", msg.sender);
+            break;
+        case LEAVE:
+        case SHUTDOWN:
+            printf("%s has left!\n", msg.sender);
+            break;
+        case SHUTDOWN_ALL:
+            printf("%s has shutdown the server, you will now be disconnected!\n", msg.sender);
+            break;
+        default:
+            printf("%s: %s", msg.sender, msg.content);
+            break;   
+    }
+}
+
 
 void flush() {
     // Flush the input buffer

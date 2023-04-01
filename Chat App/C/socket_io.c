@@ -1,40 +1,5 @@
 #include "chat.h"
 
-bool readInt32(int socket, uint32_t *result) {
-    // 32 bits
-    ssize_t totalBytes = 4;
-    ssize_t receivedBytes = 0;
-
-    // buffer for the java int
-    uint8_t buffer[totalBytes];
-
-    // loop until we receive all 4 bytes - necessary for the bit flipping
-    while (receivedBytes < totalBytes) {
-        // read byte(s) from socket
-        ssize_t bytesRead = read(socket, buffer + receivedBytes, totalBytes - receivedBytes);
-        receivedBytes += bytesRead;
-        
-        // if we get 0 bytes and we dont have 4 - error
-        if (receivedBytes == 0) {
-            return false;
-        }
-    }
-
-    *result = ntohl(*(uint32_t *)buffer);
-    return true;
-}
-
-bool writeInt32(int socket, uint32_t num) {
-    // host to network byte order
-    num = htonl(num);
-
-    // send the int to the socket
-    ssize_t bytesSent = write(socket, &num, sizeof(uint32_t));
-
-    return (bytesSent != -1);
-}
-
-
 bool sendMessage(int socket, Message msg) {
     // serialize struct into byte stream
     char buffer[sizeof(Message)];
@@ -88,6 +53,7 @@ bool readMessage(int socket, Message *msg) {
     return true;
 }
 
+// Debug Functions
 void printMessage(Message msg) {
     printf("Message Recieved:\n");
     printf(" - Command: ");

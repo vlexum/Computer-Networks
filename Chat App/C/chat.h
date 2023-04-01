@@ -57,6 +57,8 @@ bool readMessage(int socket, Message *msg);
 bool sendMessage(int socket, Message msg);
 void flush();
 Commands createMessage(char *input, Message *msg);
+void printClientList();
+void messageToChat(Message msg);
 
 /* Preprocessor directives */
 #define SERVER_ADDR "142.11.217.88" // loopback ip address
