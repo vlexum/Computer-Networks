@@ -193,13 +193,13 @@ Commands createMessage(char *input, Message *msg) {
         // set type 
         msg->type = LEAVE;
     }
-    else if (strncmp(command, "SHUTDOWN", 8) == 0) {
-        // set type 
-        msg->type = SHUTDOWN;
-    }
     else if (strncmp(command, "SHUTDOWN ALL", 12) == 0) {
         // set type 
         msg->type = SHUTDOWN_ALL;
+    }
+    else if (strncmp(command, "SHUTDOWN", 8) == 0) {
+        // set type 
+        msg->type = SHUTDOWN;
     }
     // no command -> note
     else {

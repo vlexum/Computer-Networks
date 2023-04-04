@@ -12,7 +12,7 @@ bool sendMessage(int socket, Message msg) {
     while (totalBytes < sizeof(buffer)) {
         ssize_t bytesSent = send(socket, buffer + totalBytes, sizeof(buffer) - totalBytes, 0);
 
-        if (bytesSent == -1) {
+        if (bytesSent <= 0) {
             // handle error
             // maybe more?
             return false;
@@ -31,19 +31,19 @@ bool readMessage(int socket, Message *msg) {
     char buffer[sizeof(Message)];
 
     // read into buffer
-    ssize_t totaBytes = 0;
+    ssize_t totalBytes = 0;
 
     // keep reading until we get all the bytes
-    while (totaBytes < sizeof(buffer)) {
-        ssize_t bytesReceived = recv(socket, buffer + totaBytes, sizeof(buffer) - totaBytes, 0);
+    while (totalBytes < sizeof(buffer)) {
+        ssize_t bytesReceived = recv(socket, buffer + totalBytes, sizeof(buffer) - totalBytes, 0);
 
-        if (bytesReceived == -1) {
+        if (bytesReceived <= 0) {
             // handle error
             return false;
         }
 
         // update total
-        totaBytes += bytesReceived;
+        totalBytes += bytesReceived;
     }
 
     // copy memory to the pointer
