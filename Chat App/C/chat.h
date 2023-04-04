@@ -55,7 +55,6 @@ bool readInt32(int socket, uint32_t *result);
 bool writeInt32(int socket, uint32_t num);
 bool readMessage(int socket, Message *msg);
 bool sendMessage(int socket, Message msg);
-void flush();
 Commands createMessage(char *input, Message *msg);
 void printClientList();
 void messageToChat(Message msg);

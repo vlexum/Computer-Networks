@@ -177,7 +177,7 @@ void addUser(Message msg) {
         while (current->nextClient != NULL) {
             current = current->nextClient;
         }
-
+        
         current->nextClient = newClient;
     }
 }

@@ -38,24 +38,28 @@ int main() {
     while(!shutdown) {
         Message newMsg;
 
-        
         // get user input
         fgets(message, 64, stdin);
+
+        // will need to clear input buffer
+
         printf("\x1b[1F"); // Move to beginning of previous line
         printf("\x1b[2K"); // Clear entire line
 
         // parse input
         Commands cmd = createMessage(message, &newMsg);
 
-
         // check if a join
         if (cmd == JOIN) {
             // check if already joined
             if (joined) {
+                printf("Already in server, please leave to join another\n");
                 continue;
             }
 
             joined = true;
+
+            printf("Joining %s\n", serverAddress);
         }
 
         // send to server
@@ -93,9 +97,9 @@ void *handleMessage(void *arg) {
 
     // create addr struct
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+    server_address.sin_addr.s_addr = inet_addr(serverAddress);
     server_address.sin_port = htons(PORT);
-
+    
     // connect to server socket
     if (connect(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
         perror("Error connecting to server!\n");
@@ -161,12 +165,6 @@ void *getMessages() {
 
 
 Commands createMessage(char *input, Message *msg) {
-    char command[12];
-    int totalLen = 0;
-
-    // get command type
-    sscanf(input, "%s%n", command, &totalLen);
-
     // set name - same regardles of msg type
     strcpy(msg->sender, MY_NAME);
 
@@ -178,26 +176,28 @@ Commands createMessage(char *input, Message *msg) {
     // address info as content
     strcpy(msg->content, address);
 
-    // get ip from user
-    if (sscanf(input + totalLen, "%s", serverAddress) != 1) {
-        // no IP address provided
-        strcpy(serverAddress, SERVER_ADDR);  // set serverAddress to config ip
-    }
+    // base case - set serverAddress to config ip
+    strcpy(serverAddress, SERVER_ADDR);  
 
     // check for JOIN command
-    if (strncmp(command, "JOIN", 4) == 0) {
+    if (strncmp(input, "JOIN", 4) == 0) {
         // set type 
         msg->type = JOIN;
+
+        // get passed in ip 
+        if (strlen(input) > 5) {
+            sscanf(input + 4, "%s", serverAddress);
+        }
     }
-    else if (strncmp(command, "LEAVE", 5) == 0) {
+    else if (strncmp(input, "LEAVE", 5) == 0) {
         // set type 
         msg->type = LEAVE;
     }
-    else if (strncmp(command, "SHUTDOWN ALL", 12) == 0) {
+    else if (strncmp(input, "SHUTDOWN ALL", 12) == 0) {
         // set type 
         msg->type = SHUTDOWN_ALL;
     }
-    else if (strncmp(command, "SHUTDOWN", 8) == 0) {
+    else if (strncmp(input, "SHUTDOWN", 8) == 0) {
         // set type 
         msg->type = SHUTDOWN;
     }
@@ -225,6 +225,7 @@ void messageToChat(Message msg) {
             break;
         case SHUTDOWN_ALL:
             printf("%s has shutdown the server, you will now be disconnected!\n", msg.sender);
+            exit(EXIT_SUCCESS);
             break;
         default:
             printf("%s: %s", msg.sender, msg.content);
@@ -232,9 +233,3 @@ void messageToChat(Message msg) {
     }
 }
 
-
-void flush() {
-    // Flush the input buffer
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF) {}
-}
