@@ -18,6 +18,13 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <stdbool.h>
+#include "properties.h"
+
+char *SERVER_IP;
+int SERVER_PORT;
+char *CLIENT_IP;
+int CLIENT_PORT;
+char *NAME;
 
 typedef enum {
     JOIN,
@@ -41,7 +48,7 @@ typedef struct  {
 
 /* Function prototypes */
 void* handle_client(void* arg);
-void *handleMessage(void *arg);
+void *handleMessage();
 void printMessage(Message msg);
 void addUser(Message msg);
 void removeUser(Message msg);
@@ -59,14 +66,9 @@ Commands createMessage(char *input, Message *msg);
 void printClientList();
 void messageToChat(Message msg);
 
-/* Preprocessor directives */
-#define SERVER_ADDR "142.11.217.88" // loopback ip address
-#define PORT 23657              // port the server will listen on
-
-#define MY_IP "142.11.217.88"
-#define MY_PORT 23456
-#define MY_NAME "Scott"
 
 #define NUM_CONNECTIONS 20       // number of pending connections in the connection queue
+#define SERVER_ADDR "142.11.217.88" // loopback ip address
+#define PORT 23657              // port the server will listen on
 
 #endif

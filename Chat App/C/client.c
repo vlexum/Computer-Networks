@@ -6,19 +6,25 @@
 
 // GLOBAL MUTEX - unsure if this is the best approach?
 pthread_mutex_t lock;
-char serverAddress[46];
 
 int main() {
-    bool joined = false;
-    bool shutdown = false;
+    /// initialize functions/variables
+    pthread_t recv_thread;
+    pthread_t send_thread;
+    
+    // read in config file
+    Properties *properties_list = property_read_properties("user2.properties");
 
-    char message[64];
-
-    printf("Chat Client\n");
+    // get config details
+    SERVER_IP = property_get_property(properties_list, "Server_Address");
+    SERVER_PORT = atoi(property_get_property(properties_list, "Server_Port"));
+    CLIENT_IP = property_get_property(properties_list, "Client_Address");
+    CLIENT_PORT = atoi(property_get_property(properties_list, "Client_Port"));
+    NAME = property_get_property(properties_list, "Name");
 
     // init mutex and lock it 
-    pthread_mutex_init(&lock, NULL);
-    pthread_mutex_lock(&lock);
+    // pthread_mutex_init(&lock, NULL);
+    // pthread_mutex_lock(&lock);
 
     // get input from user
     printf("Commands:\n");
@@ -27,13 +33,34 @@ int main() {
     printf("SHUTDOWN - leaves chat if necessary then closes client\n");
     printf("SHUTDOWN ALL - same as SHUTDOWN but server and all clients closed\n\n");
     printf("Any other message will be treated as chat message - must be connected to chat server\n\n");
-    printf("Enter an command/message: ");
+    printf("Enter any command/message:\n");
 
-    pthread_t receiveThread;
-    if (pthread_create(&receiveThread, NULL, getMessages, NULL) != 0) {
-        perror("Error creating thread");
-        exit(EXIT_FAILURE);
-    }
+    // Start up receiver thread
+        // Function: getMessages
+    pthread_create(&recv_thread, NULL, getMessages, NULL);
+
+    // Start up sender thread, construct and send in initial JOIN message
+        // Funtion: sender_handler
+    pthread_create(&send_thread, NULL, handleMessage, NULL);
+    
+    // wait for the send thread to close (SHUTDOWN)
+    pthread_join(send_thread, NULL);
+}
+
+void *handleMessage() {
+    bool shutdown = false;
+    bool joined = false;
+    int server_socket;                  // client side socket
+    struct sockaddr_in server_address;  // client socket naming struct
+    char message[64]; // store user input
+
+    // create addr struct
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = inet_addr(SERVER_IP);
+    server_address.sin_port = htons(SERVER_PORT);
+
+    // unlock the mutex 
+    // pthread_mutex_unlock(&lock);
 
     while(!shutdown) {
         Message newMsg;
@@ -59,18 +86,24 @@ int main() {
 
             joined = true;
 
-            printf("Joining %s\n", serverAddress);
+            printf("Joining %s\n", SERVER_IP);
         }
 
-        // send to server
+        // send to server if joined
         if (joined) {
-            // make thread
-            pthread_t sendThread;
-            if (pthread_create(&sendThread, NULL, handleMessage, (void*)&newMsg) != 0) {
-                perror("Error creating thread");
+            // create an unnamed socket, and then name it
+            server_socket = socket(AF_INET, SOCK_STREAM, 0);
+
+           // connect to server socket
+            if (connect(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
+                perror("Error connecting to server!\n");
                 exit(EXIT_FAILURE);
             }
-            pthread_mutex_lock(&lock);
+
+            sendMessage(server_socket, newMsg);
+
+            // close the socket
+            close(server_socket);
         }
 
         // check if leave and not joined
@@ -84,38 +117,7 @@ int main() {
         shutdown = (cmd == SHUTDOWN || cmd == SHUTDOWN_ALL);
     }
 
-    sleep(5);
-    return EXIT_SUCCESS;
-}
-
-void *handleMessage(void *arg) {
-    int server_socket;                  // client side socket
-    struct sockaddr_in server_address;  // client socket naming struct
-
-    // create an unnamed socket, and then name it
-    server_socket = socket(AF_INET, SOCK_STREAM, 0);
-
-    // create addr struct
-    server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr(serverAddress);
-    server_address.sin_port = htons(PORT);
-    
-    // connect to server socket
-    if (connect(server_socket, (struct sockaddr *)&server_address, sizeof(server_address)) == -1) {
-        perror("Error connecting to server!\n");
-        exit(EXIT_FAILURE);
-    }
-
-    // get message
-    Message msg = *((Message *)arg);
-
-    // unlock the mutex 
-    pthread_mutex_unlock(&lock);;
-
-    sendMessage(server_socket, msg);
-
-    // close the socket
-    close(server_socket);
+    printf("Shutting Down!\n");
 
     pthread_exit(NULL);
 }
@@ -136,7 +138,7 @@ void *getMessages() {
     // name the socket (making sure the correct network byte ordering is observed)
     server_address.sin_family      = AF_INET;           // accept IP addresses
     server_address.sin_addr.s_addr = htonl(INADDR_ANY); // accept clients on any interface
-    server_address.sin_port        = htons(MY_PORT);       // port to listen on
+    server_address.sin_port        = htons(CLIENT_PORT);       // port to listen on
     
     // binding unnamed socket to a particular port
     if (bind(receiveSocket, (struct sockaddr *)&server_address, sizeof(server_address)) != 0) {
@@ -163,21 +165,17 @@ void *getMessages() {
     }
 }
 
-
 Commands createMessage(char *input, Message *msg) {
     // set name - same regardles of msg type
-    strcpy(msg->sender, MY_NAME);
+    strcpy(msg->sender, NAME);
 
     // if not note send net details
     // put client ip and port into string
     char address[30];
-    sprintf(address, "%s:%d", MY_IP, MY_PORT);
+    sprintf(address, "%s:%d", CLIENT_IP, CLIENT_PORT);
 
     // address info as content
     strcpy(msg->content, address);
-
-    // base case - set serverAddress to config ip
-    strcpy(serverAddress, SERVER_ADDR);  
 
     // check for JOIN command
     if (strncmp(input, "JOIN", 4) == 0) {
@@ -186,7 +184,7 @@ Commands createMessage(char *input, Message *msg) {
 
         // get passed in ip 
         if (strlen(input) > 5) {
-            sscanf(input + 4, "%s", serverAddress);
+            sscanf(input + 4, "%s", SERVER_IP);
         }
     }
     else if (strncmp(input, "LEAVE", 5) == 0) {
