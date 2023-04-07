@@ -54,9 +54,8 @@ void *handleMessage() {
     struct sockaddr_in server_address;  // client socket naming struct
     char message[64]; // store user input
 
-    // create addr struct
+    // create addr struct - ip set later
     server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = inet_addr(SERVER_IP);
     server_address.sin_port = htons(SERVER_PORT);
 
     // unlock the mutex 
@@ -85,6 +84,9 @@ void *handleMessage() {
             }
 
             joined = true;
+
+            // set ip in addr struct - allows for user to input diff ip than config
+            server_address.sin_addr.s_addr = inet_addr(SERVER_IP);
 
             printf("Joining %s\n", SERVER_IP);
         }
@@ -184,7 +186,7 @@ Commands createMessage(char *input, Message *msg) {
 
         // get passed in ip 
         if (strlen(input) > 5) {
-            sscanf(input + 4, "%s", SERVER_IP);
+            strcpy(SERVER_IP, input + 5);
         }
     }
     else if (strncmp(input, "LEAVE", 5) == 0) {
