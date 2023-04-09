@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "client_handler.h": "c",
+        "chat_node.h": "c"
+    }
+}
