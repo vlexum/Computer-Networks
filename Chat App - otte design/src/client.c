@@ -7,13 +7,28 @@
 // GLOBAL MUTEX - unsure if this is the best approach?
 pthread_mutex_t lock;
 
-int main() {
+int main(int argc, char **argv) {
     /// initialize functions/variables
     pthread_t recv_thread;
     pthread_t send_thread;
+
+    // max file name size is 35 
+    char configPath[50];
+
+    // defaults to user1
+    strcpy(configPath, "./properties/user1.properties");
+
+    // check of provided with different properties file
+    if (argc == 2) {
+        // file name over
+        strncpy(configPath + 13, argv[1], 35);
+    }
+    else {
+        printf("Using default properties\n");
+    }
     
     // read in config file
-    Properties *properties_list = property_read_properties("user2.properties");
+    Properties *properties_list = property_read_properties(configPath);
 
     // get config details
     SERVER_IP = property_get_property(properties_list, "Server_Address");
@@ -27,7 +42,7 @@ int main() {
     // pthread_mutex_lock(&lock);
 
     // get input from user
-    printf("Commands:\n");
+    printf("%s's Chat Client\nCommands:\n", NAME);
     printf("JOIN 'ip' - join specified IP chat server or if ommitted join ip from config file.\n");
     printf("LEAVE - leaves chat server\n");
     printf("SHUTDOWN - leaves chat if necessary then closes client\n");
