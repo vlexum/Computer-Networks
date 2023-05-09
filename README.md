@@ -1,7 +1,4 @@
-# CS460
-Repository for team projects in NAU's Computer Networks course
-
-## Projects
+# Projects
 * Daytime Client/Server
   * The Daytime Client/Server project is a simple network application that demonstrates the client-server architecture and basic socket programming. The server listens on a predefined port and sends the current date and time to any client that connects.
 * 3A + 1 Client/Server
