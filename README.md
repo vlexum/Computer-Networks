@@ -1,6 +1,8 @@
 # CS460
 Repository for team projects in NAU's Computer Networks course
 
-## Contributors
-* Scott Austin
+## Projects
+* Daytime Client/Server
+* 3A + 1 Client/Server
+* Chat Application
 
